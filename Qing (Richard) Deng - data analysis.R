@@ -173,7 +173,7 @@ library(dplyr);library(ggplot2)
         d3 <- data.frame(dev_after_wl, time="after", type="WL")
         dev_wl <- rbind(d1,d2,d3)
 
-    ##### DATA VISUALIZATION ##############################################
+##### DATA VISUALIZATION ##############################################
 
         # Q1: impact on the creation of new users - WL and CO , bar chart
         percent <- c(mean(before_wl$reg_success),mean(test_wl$reg_success),mean(after_wl$reg_success),
@@ -204,13 +204,12 @@ library(dplyr);library(ggplot2)
         f1 <- test_co[test_co$themodule!=0,]$themodule
         f2 <- test_wl[test_wl$themodule!=0,]$themodule
 
-                # creating pie chart. 
+                # creating pie chart for the first click on FB OR GOOGLE
+        
                 # CO 
                 slices <- c(table(f1)[1],table(f1)[2])
                 lbls <- c("FB", "GOOGLE")
-                # pct <- round(slices/sum(slices)*100)
                 lbls <- paste(lbls, slices) 
-                #lbls <- paste(lbls,"%",sep="")
                 pie(slices, labels = lbls, col=c("blue","lightgreen"),main="CO - Pie Chart of clikc")
                 # WL
                 slices <- c(table(f2)[1],table(f2)[2])
@@ -218,23 +217,19 @@ library(dplyr);library(ggplot2)
                 lbls <- paste(lbls, slices) 
                 pie(slices, labels = lbls, col=c("blue","lightgreen"),main="WL - Pie Chart of clikc")
                 
-                #with in these successful account creation, the GB VS GOOGLE number are different. 
+         #with in these successful account creation, there is a different story. 
                 f1 <- test_co[test_co$reg_success==1,]$themodule
                 f2 <- test_wl[test_wl$reg_success==1,]$themodule
-                #f1 <- as.character(f1); 
                 f1[f1=="0"] <- "email"; 
-                #f1 <- as.factor(f1)
-                #f2 <- as.character(f2); 
                 f2[f2=="0"] <- "email"; 
-                #f2 <- as.factor(f2)
+
                 
                 # creating pie chrt
+                
                 #CO
                 slices <- c(table(f1)[1],table(f1)[2],table(f1)[3])
                 lbls <- c("email","FB", "GOOGLE")
-                # pct <- round(slices/sum(slices)*100)
                 lbls <- paste(lbls, slices) 
-                #lbls <- paste(lbls,"%",sep="")
                 pie(slices, labels = lbls, col=rainbow(length(lbls)),main="CO - successful account creation")
                 # WL
                 slices <- c(table(f2)[1],table(f2)[2],table(f2)[3])
