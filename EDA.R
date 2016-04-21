@@ -217,12 +217,9 @@
             
             #Q2: device analysis : desktop vs mobile vs tablet. 
             dev <- rbind(dev_co,dev_wl); dev <- dev[dev$thedevice!="NULL",]
-            ggplot(dev, aes(x=thedevice,y=ave,fill=time)) + geom_bar(stat="identity",position="dodge", colour="black")+
+            ggplot(dev, aes(x=reorder(thedevice,ave),y=ave,fill=time)) + geom_bar(stat="identity",position="dodge", colour="black")+
                 facet_grid(.~type)+scale_fill_manual(values=c("#669933", "#FFCC66","#669933"))+
-                xlab("Time Period") + ylab("Sucessful Account Creation Percent")
-            
-            
-            
+                xlab("Device Type") + ylab("Sucessful Account Creation Percent")
             
             
             # Q3: FB VS GOOGLE, PIE chart
