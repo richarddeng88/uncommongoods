@@ -26,15 +26,18 @@
         prop.table(table(test_co$reg_success))
         prop.table(table(after_co$reg_success))
         
-        # FACEBOOK VS GOOGLE, FB has more users login creation. 1040 create new account, from which 191 use social. 
+        # FACEBOOK VS GOOGLE, it looks that FB has more users login creation. 1040 create new account, from which 191 use social. 
         prop.table(table(test_co$themodule))
         table(test_co$themodule)
         table(test_co$reg_success)
         
         # eventcount
-        prop.table(table(before_co$eventcount))
-        prop.table(table(test_co$eventcount))
-        prop.table(table(after_co$eventcount))
+        a1 <- group_by(before_co, thedevice)
+        a2 <- group_by(test_co, thedevice)
+        a3 <- group_by(after_co, thedevice)
+        avg1 <- summarize(a1, avg = mean(eventcount))
+        avg2 <- summarize(a2, avg = mean(eventcount))
+        avg3 <- summarize(a3, avg = mean(eventcount))
         
         library(dplyr)
         a1 <- group_by(before_co, thedevice)
@@ -44,19 +47,23 @@
         avg2 <- summarize(a2, avg = mean(eventcount))
         avg3 <- summarize(a3, avg = mean(eventcount))
         
-        # devices
+        # devices analysis - we find that across all device, the creation percent decrease.
+        dev_before_co <- before_co %>% group_by(thedevice) %>% summarize(ave=mean(reg_success))
+        dev_test_co <- test_co %>% group_by(thedevice) %>% summarize(ave=mean(reg_success))
+        dev_after_co <- after_co %>% group_by(thedevice) %>% summarize(ave=mean(reg_success))
         
+        d1 <- data.frame(dev_before_co, time="before", type="CO")
+        d2 <- data.frame(dev_test_co, time="test", type="CO")
+        d3 <- data.frame(dev_after_co, time="after", type="CO")
+        dev_co <- rbind(d1,d2,d3)
         
         # unique identifier for site visitors
         length(unique(before_co$theugid));dim(before_co)
         
         
-        #b <- unique(before_co$theugid)
-        #for (i in b){
-        #    before_co[before_co$theugid==i,]$times <- dim(before_co[before_co$theugid==i,])[1]
-        #}
         
-    # work on wish list data
+        
+    #### work on wish list data ################################################
         
         # FB VS GOOGLE. FB looks better than google. 
         table(test_wl$themodule)
@@ -76,7 +83,7 @@
         length(unique(before_wl$isloggedin_r))
         length(unique(before_wl$login_or_create))
         
-        # find out how many user sucessfuly login either by C or BY L
+        # find out how many user sucessfuly login either by C or BY L, creating a new variable "reg_sucess"
         #a <- before_wl[, c(2,6,8)]
         #b <- grep("C", a$login_or_create)
         #d <- grep("L", a$login_or_create)
@@ -175,7 +182,26 @@
                 after_wl$reg_success[after_wl$user_login=="C"] <- 1
                 prop.table(table(after_wl$reg_success))
                 
-        # DATA VISUALIZATION
+       # device analysis: 
+                #a1 <- group_by(before_wl, thedevice)
+                #a2 <- group_by(test_wl, thedevice)
+                #a3 <- group_by(after_wl, thedevice)
+                # we find that across all device, the creation percent decrease.
+                #summarize(a1, avg = mean(reg_success))
+                #summarize(a2, avg = mean(reg_success))
+                #summarize(a3, avg = mean(reg_success))
+                
+                dev_before_wl <- before_wl %>% group_by(thedevice) %>% summarize(ave=mean(reg_success))
+                dev_test_wl <- test_wl %>% group_by(thedevice) %>% summarize(ave=mean(reg_success))
+                dev_after_wl <- after_wl %>% group_by(thedevice) %>% summarize(ave=mean(reg_success))
+                
+                d1 <- data.frame(dev_before_wl, time="before", type="WL")
+                d2 <- data.frame(dev_test_wl, time="test", type="WL")
+                d3 <- data.frame(dev_after_wl, time="after", type="WL")
+                dev_wl <- rbind(d1,d2,d3)
+                
+     #### DATA VISUALIZATION ##############################################
+                
             # Q1: impact on the creation of new users - WL and CO , bar chart
             percent <- c(mean(before_wl$reg_success),mean(test_wl$reg_success),mean(after_wl$reg_success),
                     mean(before_co$reg_success),mean(test_co$reg_success),mean(after_co$reg_success))
@@ -188,6 +214,17 @@
                 facet_grid(.~type)+scale_fill_manual(values=c("#669933", "#FFCC66","#669933"))+
                 xlab("Time Period") + ylab("Sucessful Account Creation Percent")
             
+            
+            #Q2: device analysis : desktop vs mobile vs tablet. 
+            dev <- rbind(dev_co,dev_wl); dev <- dev[dev$thedevice!="NULL",]
+            ggplot(dev, aes(x=thedevice,y=ave,fill=time)) + geom_bar(stat="identity",position="dodge", colour="black")+
+                facet_grid(.~type)+scale_fill_manual(values=c("#669933", "#FFCC66","#669933"))+
+                xlab("Time Period") + ylab("Sucessful Account Creation Percent")
+            
+            
+            
+            
+            
             # Q3: FB VS GOOGLE, PIE chart
             
             table(test_co$themodule);table(test_co$reg_success)
@@ -198,7 +235,7 @@
             f1 <- test_co[test_co$themodule!=0,]$themodule
             f2 <- test_wl[test_wl$themodule!=0,]$themodule
                 
-                # creating pie chart. 
+            # creating pie chart. 
                 # CO 
                 slices <- c(table(f1)[1],table(f1)[2])
                 lbls <- c("FB", "GOOGLE")
