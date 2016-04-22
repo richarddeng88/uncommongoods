@@ -53,8 +53,6 @@ library(dplyr);library(ggplot2)
         dev_co <- rbind(d1,d2,d3) # for later visualiztion. 
 
 
-
-
     #### work on wish list data ################################################
 
         # FB VS GOOGLE. FB looks better than google. 
@@ -74,14 +72,14 @@ library(dplyr);library(ggplot2)
         length(unique(before_wl$isloggedin_r))
         length(unique(before_wl$login_or_create))
 
-        # we don't the new creation rate. so herr we try to find out how many user sucessfuly login 
+        # we don't know the new creation rate. so here we try to find out how many user sucessfuly login 
         # either by C or BY L, creating a new variable "reg_sucess"
         before_wl$isloggedin_r <- gsub("user by-session", "no", before_wl$isloggedin_r) #replace "suer by-seesion" to "no" 
         before_success <- grep("user", before_wl$isloggedin_r) # replace the first "user" to login. 
-        dim(before_wl[before_success,]) #total there 767 sucessfully login. 
+        dim(before_wl[before_success,]) #total there are 767 sucessfully login. 
 
             # we don't know in these successful login, how many are from creation, and how many are from existing account. 
-            # to I try to defferentiate C and L, by identify if it is "C" OR "L" before the first "user" position in varialbe isloggedin_r.  
+            # to I try to defferentiate C and L, by identifying if it is "C" OR "L" before the first "user" position in varialbe isloggedin_r.  
                 # identify the position
                 s <- before_wl[before_success,]
                 s$new <- sub("user","login",s$isloggedin_r)
@@ -107,7 +105,7 @@ library(dplyr);library(ggplot2)
         prop.table(table(before_wl$reg_success))
 
 
-        # I repeate the same process on test_wl data
+        # I repeated the same process on test_wl data
                 test_wl$isloggedin_r <- gsub("user by-session", "no", test_wl$isloggedin_r)
                 test_success <- grep("user", test_wl$isloggedin_r)
                 dim(test_wl[test_success,]) #740, sucessfully login in 
@@ -222,7 +220,6 @@ library(dplyr);library(ggplot2)
                 f2 <- test_wl[test_wl$reg_success==1,]$themodule
                 f1[f1=="0"] <- "email"; 
                 f2[f2=="0"] <- "email"; 
-
                 
                 # creating pie chrt
                 
